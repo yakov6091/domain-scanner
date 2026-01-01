@@ -1,4 +1,4 @@
-type Domain = {
+export type Domain = {
     id: number,
     name: string,
     isActive: boolean,
