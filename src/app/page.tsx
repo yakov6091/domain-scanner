@@ -1,7 +1,8 @@
 import { Domain } from "./DATA/domains";
-import { SearchBar } from "./components/SearchBar";
+import { SearchBar } from "../components/SearchBar";
+import { CheckDomain } from "@/components/CheckDomian";
 
-const URL = 'http://localhost:3001/domains';
+const URL = 'http://localhost:3000/api/domains';
 
 export default async function Home({
   searchParams
@@ -33,10 +34,10 @@ export default async function Home({
               <p>Active: {domain.isActive ? "ON" : "OFF"}</p>
               <p>Last checked: {domain.lastChecked}</p>
               <p>Created at: {domain.createdAt}</p>
+              <CheckDomain domainId={domain.id} />
             </div>
           </li>
         ))}
-
       </ul>
     </div>
   );
