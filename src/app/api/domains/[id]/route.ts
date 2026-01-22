@@ -8,8 +8,7 @@ export async function PATCH(
     const { id } = await params;
     const { name, isActive, lastChecked } = await request.json();
 
-    const domainIdx = domains.findIndex((domain) =>
-        domain.id === Number(id));
+    const domainIdx = domains.findIndex((domain) => domain.id === Number(id));
     if (domainIdx === -1) {
         return new Response('Domain not found with this id', { status: 404 });
     }

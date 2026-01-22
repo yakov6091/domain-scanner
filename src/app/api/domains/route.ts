@@ -1,4 +1,4 @@
-import { domains } from "../DATA/domains";
+import { domains } from "../../DATA/domains";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
