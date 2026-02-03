@@ -17,7 +17,7 @@ export function CheckDomain({ domainId }: CheckDomainPops) {
     const [increaseId, setIncreaseId] = useState<number>(0);
 
     async function handleCheck() {
-        const response = await fetch(`api/domain-checks/${domainId}`);
+        const response = await fetch(`api/history-status/${domainId}`);
         const data = await response.json();
 
         setResult({
