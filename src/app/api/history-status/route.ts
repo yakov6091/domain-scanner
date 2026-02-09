@@ -1,33 +1,47 @@
 import { db } from "@/db";
 import { NextRequest } from "next/server";
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-
-) {
+export async function POST() {
     try {
-        const { id } = await params;
-        const { status } = await request.json();
-        if (!id || !status) {
-            return Response.json(
-                { error: 'Missing domainId or status' },
-                { status: 400 }
-            );
+        // GET all domains from DB.
+        const [domains]: any = await db.query(
+            'SELECT domain_id, domain_name FROM domains'
+        )
+
+        if (!domains) {
+            return Response.json({ message: 'Domains not found' }, { status: 404 });
         }
 
-        await db.query(
-            `INSERT INTO history_status (domain_id, status_code)
-             VALUES (?,?)
-            `, [id, status]
-        );
+        // Loop for each domain
+        for (const domain of domains) {
+            let statusCode = 0;
+
+            try {
+                const response = await fetch(`http://${domain.domain_name}`, {
+                    method: 'GET'
+                });
+
+                statusCode = response.status;
+
+            } catch (error) {
+                console.error('Error to get domain', error);
+                statusCode = 0;
+            }
+
+            // Insert new row to the history_status table
+            await db.query(
+                `INSERT INTO history_status (domain_id, status_code)
+                 VALUES (?,?)`,
+                [domain.domain_id, statusCode]
+            );
+        }
 
         return Response.json({ ok: true });
 
     } catch (error) {
-        console.error('Error to insert', error);
+        console.error('Domain check failed:', error);
         return Response.json(
-            { error: 'Failed to insert history status' },
+            { error: 'Failed to check domains' },
             { status: 500 }
         );
     }
